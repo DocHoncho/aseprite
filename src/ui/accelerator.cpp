@@ -440,6 +440,7 @@ bool Accelerator::checkFromAllegroKeyArray()
   if (key[KEY_LCONTROL]) modifiers = (KeyModifiers)((int)modifiers | (int)kKeyCtrlModifier);
   if (key[KEY_RCONTROL]) modifiers = (KeyModifiers)((int)modifiers | (int)kKeyCtrlModifier);
   if (key[KEY_ALT]     ) modifiers = (KeyModifiers)((int)modifiers | (int)kKeyAltModifier);
+  if (key[KEY_ALTGR]   ) modifiers = (KeyModifiers)((int)modifiers | (int)kKeyAltModifier);
 
   for (KeyCombos::iterator it = m_combos.begin(), end = m_combos.end();
        it != end; ++it) {
