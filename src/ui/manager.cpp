@@ -12,7 +12,7 @@
 #endif
 
 #include "ui/manager.h"
-
+#include "she/system.h"
 #include "ui/intern.h"
 #include "ui/ui.h"
 
@@ -183,8 +183,10 @@ void Manager::run()
 {
   MessageLoop loop(this);
 
-  while (!getChildren().empty())
+  while (!getChildren().empty()) {
     loop.pumpMessages();
+    she::Instance()->yield_timeslice();
+  }
 }
 
 bool Manager::generateMessages()

@@ -311,6 +311,9 @@ public:
     return new Alleg4EventLoop();
   }
 
+  void yield_timeslice() {
+    rest(0);
+  }
 };
 
 static System* g_instance;

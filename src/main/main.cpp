@@ -100,7 +100,6 @@ int app_main(int argc, char* argv[])
       if (get_memory_dump_filename(filename))
         memoryDump.setFileName(filename);
     }
-
     return app.run();
   }
   catch (std::exception& e) {

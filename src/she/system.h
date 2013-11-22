@@ -31,6 +31,10 @@ namespace she {
     virtual Surface* createSurface(int width, int height) = 0;
     virtual Surface* createSurfaceFromNativeHandle(void* nativeHandle) = 0;
     virtual EventLoop* createEventLoop() = 0;
+
+    // JRM - Apparently required for Allegro, especially on *Nix systems.
+    // Other back-ends may simply NOP this.
+    virtual void yield_timeslice() = 0;
   };
 
   System* CreateSystem();
