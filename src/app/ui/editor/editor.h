@@ -179,7 +179,7 @@ namespace app {
     void editor_clean_cursor(bool refresh = true);
     bool editor_cursor_is_subpixel();
 
-    void drawGrid(const gfx::Rect& gridBounds, const app::Color& color);
+    void drawGrid(const gfx::Rect& gridBounds, const app::Color& color, int opacity=255);
 
     void editor_setcursor();
 

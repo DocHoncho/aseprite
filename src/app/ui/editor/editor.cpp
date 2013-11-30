@@ -453,7 +453,8 @@ void Editor::drawSpriteUnclippedRect(const gfx::Rect& rc)
   // Draw the grid
   if (docSettings->getGridVisible())
     this->drawGrid(docSettings->getGridBounds(),
-                   docSettings->getGridColor());
+                   docSettings->getGridColor(),
+                   docSettings->getGridOpacity());
 
   // Draw the mask
   if (m_document->getBoundariesSegments())
@@ -586,7 +587,7 @@ void Editor::drawMaskSafe()
   }
 }
 
-void Editor::drawGrid(const Rect& gridBounds, const app::Color& color)
+void Editor::drawGrid(const Rect& gridBounds, const app::Color& color, int opacity)
 {
   // Copy the grid bounds
   Rect grid(gridBounds);
@@ -607,7 +608,7 @@ void Editor::drawGrid(const Rect& gridBounds, const app::Color& color)
   editorToScreen(grid, &grid);
 
   // Get the grid's color
-  int grid_color = color_utils::color_for_allegro(color, bitmap_color_depth(ji_screen));
+  int grid_color = color_utils::color_for_allegro(color, bitmap_color_depth(ji_screen), opacity);
 
   // Get the position of the sprite in the screen.
   Rect spriteRect;
@@ -618,6 +619,8 @@ void Editor::drawGrid(const Rect& gridBounds, const app::Color& color)
   int y1 = grid.y;
   int x2 = spriteRect.x+spriteRect.w;
   int y2 = spriteRect.y+spriteRect.h;
+
+  set_alpha_blender();
 
   for (int c=y1; c<=y2; c+=grid.h)
     hline(ji_screen, x1, c, x2, grid_color);

@@ -58,8 +58,10 @@ public:
     , m_gridVisible(get_config_bool("Grid", "Visible", false))
     , m_gridBounds(get_config_rect("Grid", "Bounds", Rect(0, 0, 16, 16)))
     , m_gridColor(get_config_color("Grid", "Color", app::Color::fromRgb(0, 0, 255)))
+    , m_gridOpacity(get_config_int("Grid", "Opacity", 255))
     , m_pixelGridColor(get_config_color("PixelGrid", "Color", app::Color::fromRgb(200, 200, 200)))
     , m_pixelGridVisible(get_config_bool("PixelGrid", "Visible", false))
+    , m_pixelGridOpacity(get_config_int("PixelGrid", "Opacity", 255))
   {
     m_tiledMode = (TiledMode)MID(0, (int)m_tiledMode, (int)TILED_BOTH);
   }
@@ -71,9 +73,10 @@ public:
     set_config_bool("Grid", "Visible", m_gridVisible);
     set_config_rect("Grid", "Bounds", m_gridBounds);
     set_config_color("Grid", "Color", m_gridColor);
+    set_config_int("Grid", "Opacity", m_gridOpacity);
     set_config_bool("PixelGrid", "Visible", m_pixelGridVisible);
     set_config_color("PixelGrid", "Color", m_pixelGridColor);
-
+    set_config_int("PixelGrid", "Opacity", m_pixelGridOpacity);
     set_config_bool("Onionskin", "Enabled", m_use_onionskin);
     set_config_int("Onionskin", "PrevFrames", m_prev_frames_onionskin);
     set_config_int("Onionskin", "NextFrames", m_next_frames_onionskin);
@@ -92,11 +95,13 @@ public:
   virtual bool getGridVisible() OVERRIDE;
   virtual gfx::Rect getGridBounds() OVERRIDE;
   virtual app::Color getGridColor() OVERRIDE;
+  virtual int getGridOpacity() OVERRIDE;
 
   virtual void setSnapToGrid(bool state) OVERRIDE;
   virtual void setGridVisible(bool state) OVERRIDE;
   virtual void setGridBounds(const gfx::Rect& rect) OVERRIDE;
   virtual void setGridColor(const app::Color& color) OVERRIDE;
+  virtual void setGridOpacity(int opacity) OVERRIDE;
 
   virtual void snapToGrid(gfx::Point& point, SnapBehavior snapBehavior) const OVERRIDE;
 
@@ -104,10 +109,11 @@ public:
 
   virtual bool getPixelGridVisible() OVERRIDE;
   virtual app::Color getPixelGridColor() OVERRIDE;
+  virtual int getPixelGridOpacity() OVERRIDE;
 
   virtual void setPixelGridVisible(bool state) OVERRIDE;
   virtual void setPixelGridColor(const app::Color& color) OVERRIDE;
-
+  virtual void setPixelGridOpacity(int opacity) OVERRIDE;
   // Onionskin settings
 
   virtual bool getUseOnionskin() OVERRIDE;
@@ -138,8 +144,10 @@ private:
   bool m_gridVisible;
   gfx::Rect m_gridBounds;
   app::Color m_gridColor;
+  int m_gridOpacity;
   bool m_pixelGridVisible;
   app::Color m_pixelGridColor;
+  int m_pixelGridOpacity;
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -293,6 +301,11 @@ app::Color UIDocumentSettingsImpl::getGridColor()
   return m_gridColor;
 }
 
+int UIDocumentSettingsImpl::getGridOpacity()
+{
+  return m_gridOpacity;
+}
+
 void UIDocumentSettingsImpl::setSnapToGrid(bool state)
 {
   m_snapToGrid = state;
@@ -314,6 +327,11 @@ void UIDocumentSettingsImpl::setGridColor(const app::Color& color)
 {
   m_gridColor = color;
   redrawDocumentViews();
+}
+
+void UIDocumentSettingsImpl::setGridOpacity(int opacity)
+{
+  m_gridOpacity = MID(0, opacity, 255);
 }
 
 void UIDocumentSettingsImpl::snapToGrid(gfx::Point& point, SnapBehavior snapBehavior) const
@@ -343,6 +361,11 @@ app::Color UIDocumentSettingsImpl::getPixelGridColor()
   return m_pixelGridColor;
 }
 
+int UIDocumentSettingsImpl::getPixelGridOpacity()
+{
+  return m_pixelGridOpacity;
+}
+
 void UIDocumentSettingsImpl::setPixelGridVisible(bool state)
 {
   m_pixelGridVisible = state;
@@ -353,6 +376,11 @@ void UIDocumentSettingsImpl::setPixelGridColor(const app::Color& color)
 {
   m_pixelGridColor = color;
   redrawDocumentViews();
+}
+
+void UIDocumentSettingsImpl::setPixelGridOpacity(int opacity)
+{
+  m_pixelGridOpacity = MID(0, opacity, 255);
 }
 
 bool UIDocumentSettingsImpl::getUseOnionskin()

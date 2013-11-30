@@ -396,7 +396,12 @@ Widget* WidgetLoader::convertXmlElementToWidget(const TiXmlElement* elem, Widget
   }
   /* colorpicker */
   else if (elem_name == "colorpicker") {
-    widget = new ColorButton(Color::fromMask(), app_get_current_pixel_format());
+    const char* colorString = elem->Attribute("color");
+
+    if (colorString == NULL)
+      colorString = "mask";
+
+    widget = new ColorButton(Color::fromString(colorString), app_get_current_pixel_format());
   }
 
   // Was the widget created?

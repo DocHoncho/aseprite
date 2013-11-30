@@ -28,8 +28,9 @@
 #include "app/modules/editors.h"
 #include "app/settings/document_settings.h"
 #include "app/settings/settings.h"
-#include "app/ui/status_bar.h"
+#include "app/ui/color_button.h"
 #include "app/ui_context.h"
+#include "app/ui/status_bar.h"
 #include "ui/window.h"
 
 #include <allegro/unicode.h>
@@ -129,6 +130,10 @@ void GridSettingsCommand::onExecute(Context* context)
   Widget* grid_y = app::find_widget<Widget>(window, "grid_y");
   Widget* grid_w = app::find_widget<Widget>(window, "grid_w");
   Widget* grid_h = app::find_widget<Widget>(window, "grid_h");
+  ColorButton* grid_color = app::find_widget<ColorButton>(window, "grid_color");
+  Widget* grid_opacity = app::find_widget<Widget>(window, "grid_opacity");
+  ColorButton* pixel_grid_color = app::find_widget<ColorButton>(window, "pixel_grid_color");
+  Widget* pixel_grid_opacity = app::find_widget<Widget>(window, "pixel_grid_opacity");
 
   IDocumentSettings* docSettings = context->getSettings()->getDocumentSettings(context->getActiveDocument());
   Rect bounds = docSettings->getGridBounds();
@@ -137,6 +142,10 @@ void GridSettingsCommand::onExecute(Context* context)
   grid_y->setTextf("%d", bounds.y);
   grid_w->setTextf("%d", bounds.w);
   grid_h->setTextf("%d", bounds.h);
+  grid_color->setColor(docSettings->getGridColor());
+  grid_opacity->setTextf("%d", docSettings->getGridOpacity());
+  pixel_grid_color->setColor(docSettings->getPixelGridColor());
+  pixel_grid_opacity->setTextf("%d", docSettings->getPixelGridOpacity());
 
   window->openWindowInForeground();
 
@@ -149,6 +158,10 @@ void GridSettingsCommand::onExecute(Context* context)
     bounds.h = MAX(bounds.h, 1);
 
     docSettings->setGridBounds(bounds);
+    docSettings->setGridColor(grid_color->getColor());
+    docSettings->setGridOpacity(grid_opacity->getTextInt());
+    docSettings->setPixelGridColor(pixel_grid_color->getColor());
+    docSettings->setPixelGridOpacity(pixel_grid_opacity->getTextInt());
   }
 }
 

@@ -72,7 +72,7 @@ ui::Color color_utils::blackandwhite_neg(ui::Color color)
     return ui::rgba(0, 0, 0);
 }
 
-ui::Color color_utils::color_for_ui(const app::Color& color)
+ui::Color color_utils::color_for_ui(const app::Color& color, int alpha)
 {
   ui::Color c = ui::ColorNone;
 
@@ -86,13 +86,13 @@ ui::Color color_utils::color_for_ui(const app::Color& color)
     case app::Color::HsvType:
       c = ui::rgba(color.getRed(),
                    color.getGreen(),
-                   color.getBlue(), 255);
+                   color.getBlue(), alpha);
       break;
 
     case app::Color::GrayType:
       c = ui::rgba(color.getGray(),
                    color.getGray(),
-                   color.getGray(), 255);
+                   color.getGray(), alpha);
       break;
 
     case app::Color::IndexType: {
@@ -102,7 +102,7 @@ ui::Color color_utils::color_for_ui(const app::Color& color)
       uint32_t _c = get_current_palette()->getEntry(i);
       c = ui::rgba(rgba_getr(_c),
                    rgba_getg(_c),
-                   rgba_getb(_c), 255);
+                   rgba_getb(_c), alpha);
       break;
     }
 
@@ -110,8 +110,7 @@ ui::Color color_utils::color_for_ui(const app::Color& color)
 
   return c;
 }
-
-int color_utils::color_for_allegro(const app::Color& color, int depth)
+int color_utils::color_for_allegro(const app::Color& color, int depth, int alpha)
 {
   int c = -1;
 
@@ -126,13 +125,13 @@ int color_utils::color_for_allegro(const app::Color& color, int depth)
       c = makeacol_depth(depth,
                          color.getRed(),
                          color.getGreen(),
-                         color.getBlue(), 255);
+                         color.getBlue(), alpha);
       break;
 
     case app::Color::GrayType:
       c = color.getGray();
       if (depth != 8)
-        c = makeacol_depth(depth, c, c, c, 255);
+        c = makeacol_depth(depth, c, c, c, alpha);
       break;
 
     case app::Color::IndexType:
@@ -144,7 +143,7 @@ int color_utils::color_for_allegro(const app::Color& color, int depth)
         c = makeacol_depth(depth,
                            rgba_getr(_c),
                            rgba_getg(_c),
-                           rgba_getb(_c), 255);
+                           rgba_getb(_c), alpha);
       }
       break;
 

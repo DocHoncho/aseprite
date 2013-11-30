@@ -15,7 +15,23 @@
 
     <label text="Height:" />
     <entry id="grid_h" text="" maxsize="4" />
+    
+    <box horizontal="true" cell_hspan="4">
+    <grid columns="4">
+        <label text="Grid Color:" />
+        <colorpicker id="grid_color" color="mask" />
+        
+        <label text="Opacity" />
+        <entry id="grid_opacity" text="" maxsize="4" />
 
+        <label text="Pixel grid:" />
+        <colorpicker id="pixel_grid_color" color="mask" />
+        
+        <label text="Opacity" />
+        <entry id="pixel_grid_opacity" text="" maxsize="4" />
+    </grid>
+    </box>
+    
     <separator horizontal="true" cell_hspan="4" />
 
     <box horizontal="true" homogeneous="true" cell_hspan="4" cell_align="right">
