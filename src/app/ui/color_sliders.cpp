@@ -32,6 +32,13 @@
 #include "ui/label.h"
 #include "ui/preferred_size_event.h"
 #include "ui/slider.h"
+#include "app/modules/palettes.h"
+
+#include "app/context.h"
+#include "app/ui_context.h"
+#include "app/document.h"
+#include "raster/sprite.h"
+#include "raster/pixel_format.h"
 
 namespace app {
 
@@ -47,46 +54,65 @@ namespace {
   public:
     ColorSliderBgPainter(ColorSliders::Channel channel)
       : m_channel(channel)
-    { }
+      , m_quantizeToIndexed(false)
+    {}
 
     void setColor(const app::Color& color) {
       m_color = color;
     }
 
     void paint(Slider* slider, Graphics* g, const gfx::Rect& rc) {
+      raster::Palette* palette = get_current_palette();
       ui::Color color;
-      for (int x=0; x < rc.w; ++x) {
-        switch (m_channel) {
-          case ColorSliders::Red:
-            color = ui::rgba(255 * x / (rc.w-1), m_color.getGreen(), m_color.getBlue());
-            break;
-          case ColorSliders::Green:
-            color = ui::rgba(m_color.getRed(), 255 * x / (rc.w-1), m_color.getBlue());
-            break;
-          case ColorSliders::Blue:
-            color = ui::rgba(m_color.getRed(), m_color.getGreen(), 255 * x / (rc.w-1));
-            break;
-          case ColorSliders::Hue:
-            color = color_utils::color_for_ui(app::Color::fromHsv(360 * x / (rc.w-1), m_color.getSaturation(), m_color.getValue()));
-            break;
-          case ColorSliders::Saturation:
-            color = color_utils::color_for_ui(app::Color::fromHsv(m_color.getHue(), 100 * x / (rc.w-1), m_color.getValue()));
-            break;
-          case ColorSliders::Value:
-            color = color_utils::color_for_ui(app::Color::fromHsv(m_color.getHue(), m_color.getSaturation(), 100 * x / (rc.w-1)));
-            break;
-          case ColorSliders::Gray:
-            color = color_utils::color_for_ui(app::Color::fromGray(255 * x / (rc.w-1)));
-            break;
-        }
-        g->drawVLine(color, rc.x+x, rc.y, rc.h);
+      for (int x = 0; x < rc.w; ++x) {
+        color = calculateColor(x, rc.w);
+
+        if (m_quantizeToIndexed) {}
+          color = palette->getEntry(palette->findBestfit(ui::getr(color), ui::getg(color), ui::getb(color)));
+
+        g->drawVLine(color, rc.x + x, rc.y, rc.h);
       }
+    }
+
+    void setQuantizeToIndexed(bool quantize) {
+      m_quantizeToIndexed = quantize;
+    }
+
+  protected:
+    ui::Color calculateColor(int x, int width) {
+      ui::Color color;
+      switch (m_channel) {
+      case ColorSliders::Red:
+        color = ui::rgba(255 * x / (width - 1), m_color.getGreen(), m_color.getBlue());
+        break;
+      case ColorSliders::Green:
+        color = ui::rgba(m_color.getRed(), 255 * x / (width - 1), m_color.getBlue());
+        break;
+      case ColorSliders::Blue:
+        color = ui::rgba(m_color.getRed(), m_color.getGreen(), 255 * x / (width - 1));
+        break;
+      case ColorSliders::Hue:
+        color = color_utils::color_for_ui(app::Color::fromHsv(360 * x / (width - 1), m_color.getSaturation(), m_color.getValue()));
+        break;
+      case ColorSliders::Saturation:
+        color = color_utils::color_for_ui(app::Color::fromHsv(m_color.getHue(), 100 * x / (width - 1), m_color.getValue()));
+        break;
+      case ColorSliders::Value:
+        color = color_utils::color_for_ui(app::Color::fromHsv(m_color.getHue(), m_color.getSaturation(), 100 * x / (width - 1)));
+        break;
+      case ColorSliders::Gray:
+        color = color_utils::color_for_ui(app::Color::fromGray(255 * x / (width - 1)));
+        break;
+      }
+
+      return color;
     }
 
   private:
     ColorSliders::Channel m_channel;
     BITMAP* m_cachedBg;
     app::Color m_color;
+    bool m_quantizeToIndexed;
   };
 
 }
@@ -147,6 +173,13 @@ void ColorSliders::setSliderValue(int sliderIndex, int value)
   updateEntryText(sliderIndex);
 }
 
+void ColorSliders::setQuantizeToIndexed(bool quantize) {
+  ui::Slider* slider;
+  for (std::vector<ui::Slider*>::iterator i = m_slider.begin(); i != m_slider.end(); ++i) {
+    slider = *i;
+    updateSliderQuantizeToIndexed(slider, quantize);
+  }
+}
 int ColorSliders::getSliderValue(int sliderIndex) const
 {
   Slider* slider = m_slider[sliderIndex];
@@ -208,6 +241,14 @@ void ColorSliders::updateSliderBgColor(Slider* slider, const app::Color& color)
   slider->invalidate();
 }
 
+void ColorSliders::updateSliderQuantizeToIndexed(Slider* slider, bool quantize)
+{
+  SharedPtr<SkinSliderProperty> sliderProperty(slider->getProperty("SkinProperty"));
+
+  static_cast<ColorSliderBgPainter*>(sliderProperty->getBgPainter())->setQuantizeToIndexed(quantize);
+
+  slider->invalidate();
+}
 //////////////////////////////////////////////////////////////////////
 // RgbSliders
 

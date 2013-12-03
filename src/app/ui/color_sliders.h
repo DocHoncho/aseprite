@@ -25,6 +25,7 @@
 #include "ui/event.h"
 #include "ui/grid.h"
 #include "ui/widget.h"
+#include "raster/palette.h"
 
 #include <vector>
 
@@ -63,6 +64,8 @@ namespace app {
     virtual void onSetColor(const app::Color& color) = 0;
     virtual app::Color getColorFromSliders() = 0;
 
+    void setQuantizeToIndexed(bool quantize);
+
   private:
     void onSliderChange(int i);
     void onEntryChange(int i);
@@ -71,6 +74,7 @@ namespace app {
     void updateEntryText(int entryIndex);
     void updateSlidersBgColor(const app::Color& color);
     void updateSliderBgColor(ui::Slider* slider, const app::Color& color);
+    void updateSliderQuantizeToIndexed(ui::Slider* slider, bool quantize);
 
     std::vector<ui::Label*> m_label;
     std::vector<ui::Slider*> m_slider;

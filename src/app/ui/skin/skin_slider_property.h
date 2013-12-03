@@ -33,6 +33,7 @@ namespace app {
     class ISliderBgPainter {
     public:
       virtual void paint(ui::Slider* slider, ui::Graphics* graphics, const gfx::Rect& rc) = 0;
+      virtual void setQuantizeToIndexed(bool quantize) = 0;
     };
 
     class SkinSliderProperty : public SkinProperty {
