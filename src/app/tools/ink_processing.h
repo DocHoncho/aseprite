@@ -598,6 +598,53 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////
+// Randomized Ink
+//////////////////////////////////////////////////////////////////////
+
+inline int lerp(int v0, int v1, double t) {
+  return  floor(v0 + (v1 - v0) * t);
+}
+
+inline color_t lerp_rgba(color_t c0, color_t c1, double t) {
+  return rgba(lerp(rgba_getr(c0), rgba_getr(c1), t),
+              lerp(rgba_getg(c0), rgba_getg(c1), t),
+              lerp(rgba_getb(c0), rgba_getb(c1), t),
+              lerp(rgba_geta(c0), rgba_geta(c1), t));
+}
+
+template<typename ImageTraits>
+class RandomizedInkProcessing : public SimpleInkProcessing<RandomizedInkProcessing<ImageTraits>, ImageTraits> {
+public:
+  RandomizedInkProcessing(ToolLoop* loop) {
+    m_color1 = loop->getPrimaryColor();
+    m_color2 = loop->getSecondaryColor();
+  }
+
+  void processPixel(int x, int y) {
+  }
+
+private:
+  color_t m_color1;
+  color_t m_color2;
+};
+
+template<>
+void RandomizedInkProcessing<RgbTraits>::processPixel(int x, int y) {
+  double r = ((double)rand() / (RAND_MAX));
+
+  *m_dstAddress = lerp_rgba(m_color1, m_color2, r);
+}
+
+template<>
+void RandomizedInkProcessing<GrayscaleTraits>::processPixel(int x, int y) {
+
+}
+
+template<>
+void RandomizedInkProcessing<IndexedTraits>::processPixel(int x, int y) {
+
+}
+//////////////////////////////////////////////////////////////////////
 
 enum {
   INK_OPAQUE,
@@ -607,6 +654,7 @@ enum {
   INK_REPLACE,
   INK_JUMBLE,
   INK_SHADING,
+  INK_RANDOMIZED,
   MAX_INKS
 };
 
@@ -631,7 +679,8 @@ AlgoHLine ink_processing[][3] =
   DEFINE_INK(BlurInkProcessing),
   DEFINE_INK(ReplaceInkProcessing),
   DEFINE_INK(JumbleInkProcessing),
-  DEFINE_INK(ShadingInkProcessing)
+  DEFINE_INK(ShadingInkProcessing),
+  DEFINE_INK(RandomizedInkProcessing)
 };
 
 } // anonymous namespace

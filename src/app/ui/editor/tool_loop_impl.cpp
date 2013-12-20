@@ -310,6 +310,9 @@ private:
       case kJumbleInk:
         id = WellKnownInks::Jumble;
         break;
+      case kRandomizedInk:
+        id = WellKnownInks::Randomized;
+      break;
     }
 
     return App::instance()->getToolBox()->getInkById(id);

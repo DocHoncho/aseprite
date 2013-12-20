@@ -51,6 +51,7 @@ namespace app {
       extern const char* Move;
       extern const char* Blur;
       extern const char* Jumble;
+      extern const char* Randomized;
     };
 
     typedef std::list<Tool*> ToolList;

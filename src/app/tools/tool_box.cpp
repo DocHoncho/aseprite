@@ -68,6 +68,7 @@ const char* WellKnownInks::Scroll = "scroll";
 const char* WellKnownInks::Move = "move";
 const char* WellKnownInks::Blur = "blur";
 const char* WellKnownInks::Jumble = "jumble";
+const char* WellKnownInks::Randomized = "randomized";
 
 ToolBox::ToolBox()
 {
@@ -89,6 +90,7 @@ ToolBox::ToolBox()
   m_inks[WellKnownInks::Move]            = new MoveInk();
   m_inks[WellKnownInks::Blur]            = new BlurInk();
   m_inks[WellKnownInks::Jumble]          = new JumbleInk();
+  m_inks[WellKnownInks::Randomized]      = new PaintInk(PaintInk::Randomized);
 
   m_controllers["freehand"]              = new FreehandController();
   m_controllers["point_by_point"]        = new PointByPointController();

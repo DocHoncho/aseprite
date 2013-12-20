@@ -271,6 +271,7 @@ public:
     addItem("Selection");
     addItem("Blur");
     addItem("Jumble");
+    addItem("Randomized");
   }
 
   void setInkType(InkType inkType) {

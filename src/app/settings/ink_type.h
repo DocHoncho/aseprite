@@ -36,6 +36,7 @@ namespace app {
     kSelectionInk,
     kBlurInk,
     kJumbleInk,
+    kRandomizedInk,
     kMaxInks
   };
 
